@@ -13,9 +13,10 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
  
 import {Provider} from 'react-redux';
 import store from './store'
-import { Center, Container, useColorModeValue } from '@chakra-ui/react'
+import { Center, ChakraProvider, Container, useColorModeValue } from '@chakra-ui/react'
 import { BrowserRouter } from 'react-router-dom'
 import { Menu } from './components/Menu'
+import { theme } from './theme'
 
 // Configure chains & providers with the Alchemy provider.
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
@@ -58,18 +59,19 @@ function App() {
   return (
       <WagmiConfig config={config}>
         <Provider store={store}>
-                <Center width="100%"  bg={bgColor} flexDirection="column">
-                    <BrowserRouter>
-
-                        <Menu />
-                        <Container centerContent width="100%" flex={1} maxWidth="container" paddingX="space20">
-                            <Container>
-                              Home
-                            </Container>
-                        </Container>
-                    </BrowserRouter>
-                </Center>
-            </Provider>
+          <ChakraProvider theme={theme}>
+              <Center width="100%"  bg={bgColor} flexDirection="column">
+                  <BrowserRouter>
+                      <Menu />
+                      <Container centerContent width="100%" flex={1} maxWidth="container" paddingX="space20">
+                          <Container>
+                            Home
+                          </Container>
+                      </Container>
+                  </BrowserRouter>
+              </Center>
+            </ChakraProvider>
+        </Provider>
       </WagmiConfig>
   )
 }
