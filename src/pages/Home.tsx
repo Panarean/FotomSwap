@@ -8,6 +8,7 @@ import { Route, Routes }  from 'react-router-dom'
 import {
     //SwapWidget,
     Pool,
+    SwapWidget
     //AddLiquidity,
     //RemoveLiquidity
 } from '../components';
@@ -35,12 +36,13 @@ export function Home() {
     return (
         <Routes>
             <Route path="/pool" element={<Pool/>} />
+            <Route path="/swap" element={<SwapWidget/>} />
+
         </Routes>
     );
 }
 /*
 
-                <Route path="/swap" element={<SwapWidget/>} />
                 <Route path="/addLiquidity" element={<Addliquidity/>} />
                 <Route path="/removeLiquidity" element={<RemoveLiquidity/>} />
 */

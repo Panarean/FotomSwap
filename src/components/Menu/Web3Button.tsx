@@ -3,7 +3,7 @@ import { Button } from '@chakra-ui/react';
 import { useAccount ,useConnect} from 'wagmi';
 import { AccountPopover } from './AccountPopover';
 import {  useState } from 'react';
-import { WalletSelectDialog } from '../WalletSelectDialog'
+import { WalletSelectDialog } from '../Widgets/WalletSelectDialog'
 
 export function Web3Button() {
     const { isConnected, address, isConnecting } = useAccount();
