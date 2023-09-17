@@ -8,13 +8,17 @@
     "start": "vite --host",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "theme": "chakra-cli tokens src/theme",
+    "postinstall": "npm run theme"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "axios": "^1.5.0",
     "chakra-react-select": "^4.7.2",
+    "ethers": "^6.7.1",
     "framer-motion": "^10.16.4",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
@@ -26,6 +30,8 @@
     "wagmi": "^1.4.2"
   },
   "devDependencies": {
+    "@chakra-ui/cli": "latest",
+    "@chakra-ui/styled-system": "latest",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",

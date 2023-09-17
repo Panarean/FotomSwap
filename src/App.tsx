@@ -4,6 +4,7 @@ import './App.css'
 import { WagmiConfig, createConfig, configureChains } from 'wagmi'
 import { goerli } from 'viem/chains'
 import { publicProvider } from 'wagmi/providers/public'
+import { infuraProvider } from 'wagmi/providers/infura'
  
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
 import { InjectedConnector } from 'wagmi/connectors/injected'
@@ -17,12 +18,13 @@ import { Center, ChakraProvider, Container, useColorModeValue } from '@chakra-ui
 import { BrowserRouter } from 'react-router-dom'
 import { Menu } from './components/Menu'
 import { theme } from './theme'
+import { Home } from './pages/Home'
 
 // Configure chains & providers with the Alchemy provider.
 // Two popular providers are Alchemy (alchemy.com) and Infura (infura.io)
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [goerli],
-  [publicProvider()],
+  [infuraProvider({ apiKey: 'aa69bfabb0ff4ec0b80b0577fda29865' }),publicProvider()],
 )
  
 // Set up wagmi config
@@ -55,18 +57,16 @@ const config = createConfig({
 })
 
 function App() {
-  const bgColor = useColorModeValue('light.bg.primary', 'dark.bg.primary');
+  const bgColor = 'dark.bg.primary';
   return (
       <WagmiConfig config={config}>
         <Provider store={store}>
           <ChakraProvider theme={theme}>
-              <Center width="100%"  bg={bgColor} flexDirection="column">
+              <Center  width="100%"  bg={bgColor} flexDirection="column">
                   <BrowserRouter>
                       <Menu />
                       <Container centerContent width="100%" flex={1} maxWidth="container" paddingX="space20">
-                          <Container>
-                            Home
-                          </Container>
+                          <Home />
                       </Container>
                   </BrowserRouter>
               </Center>

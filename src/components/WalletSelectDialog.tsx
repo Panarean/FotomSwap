@@ -5,9 +5,9 @@ import {
     Modal, ModalContent, ModalHeader, ModalBody,   
 } from '@chakra-ui/modal';
 
-import metamask from '../../assets/images/metamask-icon.png';
-import walletConnect from '../../assets/images/walletConnect.png';
-import coinbase from '../../assets/images/coinbase.png';
+import metamask from '../assets/images/metamask-icon.png';
+import walletConnect from '../assets/images/walletConnect.png';
+import coinbase from '../assets/images/coinbase.png';
 
 export function WalletSelectDialog({
     open,setOpen,setWalletIndex
