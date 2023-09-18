@@ -12,16 +12,20 @@ import {
 
 import { AppState, Tokens } from '../../store';
 import { SelectToken } from './SelectToken';
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Field } from './Field';
 import { Button } from '@chakra-ui/react';
 import { Box,Flex } from '@chakra-ui/react';
-import { useAccount,useConnect } from 'wagmi';
-import {  goerli } from 'wagmi/chains'
+import { useAccount,useConnect, useWalletClient } from 'wagmi';
 import axios from 'axios';
+import {Buffer as  bBuf} from 'buffer'
 //import { arrayify } from 'ethers/lib/utils';
 import {  FiRepeat } from 'react-icons/fi';
 import { AnimatePresence } from 'framer-motion';
+import { getEthersProvider, getEthersSigner } from '../../web3';
+
+window.Buffer = window.Buffer || bBuf;
+
 enum ButtonState{
     WAITING,
     INSUFFICIENT,
@@ -32,12 +36,10 @@ enum ButtonState{
 }
 
 export function SwapWidget() {
-    const providerURL = "https://goerli.infura.io/v3/aa69bfabb0ff4ec0b80b0577fda29865";
-
-    const dispatch = useDispatch();
-
-    const {isConnected, isConnecting, address, connector} = useAccount();
-
+    
+    const {  }  = useWalletClient();
+    const {isConnected, isConnecting, address } = useAccount();
+    
     const {isLoading} = useConnect();
 
     const [isWaiting, setWaiting] = useState<boolean>(false);
@@ -65,9 +67,11 @@ export function SwapWidget() {
     const [firstAllowance, setFirstAllowance] = useState<string>('0');
     const [secondAllowance, setSecondAllowance] = useState<string>('0');
 
-    var buttonText:string;
+    const provider = getEthersProvider();
+    var buttonText:string = '';
     var buttonState:ButtonState;
 
+   
     const handleChange = (field: 'first' | 'second', event: ChangeEvent<HTMLInputElement>) => {
         const {value} = event.target;
         if (field === 'first') {
@@ -84,14 +88,13 @@ export function SwapWidget() {
 
     const mySetFirstBalance = async () => {
         if (isConnected && firstToken) {
-            const provider = new ethers.providers.Web3Provider(await connector?.getProvider());
-
-            let Contract, Balance:BigNumber, Decimal, TotalBalance:number, FixedBalance:number;
+            
+            let Contract, Balance, Decimal, TotalBalance:number, FixedBalance:number;
 
             Contract = new ethers.Contract(firstToken?.contract, IERC20, provider);
             Balance = await Contract.balanceOf(address);
             Decimal = parseInt(await Contract.decimals());
-            TotalBalance = parseFloat(ethers.utils.formatUnits(Balance, Decimal));
+            TotalBalance = parseFloat(ethers.formatUnits(Balance, Decimal));
             FixedBalance = parseFloat(TotalBalance.toFixed(2));
             setFirstBalance(TotalBalance);
             setFirstFixedBalance(FixedBalance)
@@ -104,14 +107,12 @@ export function SwapWidget() {
 
     const mySetSecondBalance = async () => {
         if (isConnected && secondToken) {
-            const provider = new ethers.providers.Web3Provider(await connector?.getProvider());
-
-            let Contract, Balance:BigNumber, Decimal, TotalBalance:number, FixedBalance:number;
+            let Contract, Balance, Decimal, TotalBalance:number, FixedBalance:number;
 
             Contract = new ethers.Contract(secondToken?.contract, IERC20, provider);
             Balance = await Contract.balanceOf(address);
             Decimal = parseInt(await Contract.decimals());
-            TotalBalance = parseFloat(ethers.utils.formatUnits(Balance, Decimal));
+            TotalBalance = parseFloat(ethers.formatUnits(Balance, Decimal));
             FixedBalance = parseFloat(TotalBalance.toFixed(2));
             setSecondBalance(TotalBalance);
             setSecondFixedBalance(FixedBalance)
@@ -123,12 +124,11 @@ export function SwapWidget() {
     }
 
     const mySetFirstUsdValue = async(value:number) => {
-        const provider =  new ethers.providers.JsonRpcProvider(providerURL);
         let oracleContract, tokenPriceData, tokenPrice:number;
         if (firstToken && firstToken?.oracle !== '') {
             oracleContract = new ethers.Contract(firstToken?.oracle, IOracle, provider);
             tokenPriceData = await oracleContract.latestRoundData();
-            tokenPrice = parseFloat(ethers.utils.formatUnits(tokenPriceData.answer, 8))
+            tokenPrice = parseFloat(ethers.formatUnits(tokenPriceData.answer, 8))
             
             setFirstUsdValue(value * tokenPrice);
         }
@@ -138,12 +138,11 @@ export function SwapWidget() {
     }
 
     const mySetSecondUsdValue = async(value:number) => {
-        const provider =  new ethers.providers.JsonRpcProvider(providerURL);
         let oracleContract, tokenPriceData, tokenPrice:number;
         if (secondToken && secondToken?.oracle !== '') {
             oracleContract = new ethers.Contract(secondToken?.oracle, IOracle, provider);
             tokenPriceData = await oracleContract.latestRoundData();
-            tokenPrice = parseFloat(ethers.utils.formatUnits(tokenPriceData.answer, 8))
+            tokenPrice = parseFloat(ethers.formatUnits(tokenPriceData.answer, 8))
             
             setSecondUsdValue(value * tokenPrice);
         }
@@ -166,11 +165,10 @@ export function SwapWidget() {
         let curPath = await getSwapPath();
         if (!curPath) return;
        
-        const provider =  new ethers.providers.JsonRpcProvider(providerURL);
 
         let secondContract = new ethers.Contract(secondToken?.contract, IERC20, provider);
         let secondDecimal = parseInt(await secondContract.decimals());
-        let realSecondAmount = ethers.utils.parseUnits(String(value), secondDecimal);
+        let realSecondAmount = ethers.parseUnits(String(value), secondDecimal);
 
         let routerContract = new ethers.Contract(RouterAddress, IRouter, provider);
         let amounts = [];
@@ -178,7 +176,7 @@ export function SwapWidget() {
 
         let firstContract = new ethers.Contract(firstToken?.contract, IERC20, provider);
         let firstDecimal = parseInt(await firstContract.decimals());
-        let realFirstValue = parseFloat(ethers.utils.formatUnits(amounts[0], firstDecimal));
+        let realFirstValue = parseFloat(ethers.formatUnits(amounts[0], firstDecimal));
 
         setFirstValue(realFirstValue);
     }
@@ -189,11 +187,10 @@ export function SwapWidget() {
         let curPath = await getSwapPath();
         if (!curPath) return;
         
-        const provider =  new ethers.providers.JsonRpcProvider(providerURL);
 
         let firstContract = new ethers.Contract(firstToken?.contract, IERC20, provider);
         let firstDecimal = parseInt(await firstContract.decimals());
-        let realFirstAmount = ethers.utils.parseUnits(String(value), firstDecimal);
+        let realFirstAmount = ethers.parseUnits(String(value), firstDecimal);
 
         let routerContract = new ethers.Contract(RouterAddress, IRouter, provider);
         let amounts = [];
@@ -201,7 +198,7 @@ export function SwapWidget() {
 
         let secondContract = new ethers.Contract(secondToken?.contract, IERC20, provider);
         let secondDecimal = parseInt(await secondContract.decimals());
-        let realSecondValue = parseFloat(ethers.utils.formatUnits(amounts[curPath.length-1], secondDecimal));
+        let realSecondValue = parseFloat(ethers.formatUnits(amounts[curPath.length-1], secondDecimal));
 
         setSecondValue(realSecondValue);
     }
@@ -223,7 +220,6 @@ export function SwapWidget() {
 
     const setMax = async() => {
         if (isConnected && firstToken && firstBalance) {
-            const provider = new ethers.providers.Web3Provider(await connector?.getProvider());
 
             let Contract, FixDecimal;
 
@@ -249,11 +245,10 @@ export function SwapWidget() {
     const getAllowance = async(token:Tokens) => {
         if (!isConnected) return;
         if (!token)  return;
-        const provider = new ethers.providers.Web3Provider(await connector?.getProvider());
         const tokenContract = new ethers.Contract(token.contract, IERC20, provider);
-        let allowance:BigNumber = await tokenContract.allowance(address, RouterAddress);
+        let allowance = await tokenContract.allowance(address, RouterAddress);
         let decimal = parseInt(await tokenContract.decimals());
-        let allowanceNumber = ethers.utils.formatUnits(allowance, decimal);
+        let allowanceNumber = ethers.formatUnits(allowance, decimal);
         return allowanceNumber;
     }
     
@@ -328,22 +323,28 @@ export function SwapWidget() {
     const onClickSwapButton = async () => {
         setWaiting(true);
 
-        if (!isConnected || !address) {
+        if (!isConnected || !address ) {
+            setWaiting(false)
             return;
         }
         if(!firstToken) return;
         if(!firstValue) return;
-        let provider = new ethers.providers.Web3Provider(await connector?.getProvider());
         let tokenContract, routerContract;
         let decimal, amoutIn, path;
         let transaction;
 
-        tokenContract = new ethers.Contract(firstToken.contract, IERC20, provider);
-        routerContract = new ethers.Contract(RouterAddress, IRouter, provider);
-
+        let signer = await getEthersSigner({chainId:5});
+        if(!signer){
+            setWaiting(false);
+            return;
+        }
+        tokenContract = new ethers.Contract(firstToken.contract, IERC20, signer);
+        routerContract = new ethers.Contract(RouterAddress, IRouter, signer);
+        
         if (buttonState == ButtonState.APPROVEFIRST) {
             try {
-                transaction = await tokenContract.connect(provider.getSigner()).approve(RouterAddress, ethers.constants. MaxUint256)
+                
+                transaction = await tokenContract.approve(RouterAddress, ethers.MaxUint256)
                 await transaction.wait();
             } catch (error) {
                 console.error(error);
@@ -351,13 +352,13 @@ export function SwapWidget() {
         }
         else if (buttonState == ButtonState.SWAP) {
             decimal = parseInt(await tokenContract.decimals());
-            amoutIn = ethers.utils.parseUnits(String(firstValue), decimal);
+            amoutIn = ethers.parseUnits(String(firstValue), decimal);
             path = await getSwapPath();
 
             if (!amoutIn || !path || !address) return;
             
             try {
-                const transaction = await routerContract.connect(provider.getSigner()).swapExactTokensForTokens(amoutIn, 0, path, address, ethers.constants.MaxUint256);
+                const transaction = await routerContract.swapExactTokensForTokens(amoutIn, 0, path, address, ethers.MaxUint256);
                 await transaction.wait();
             } catch (error) {
                 console.error(error);
@@ -387,7 +388,7 @@ export function SwapWidget() {
                             usdValue={firstUsdValue}
                             balance={firstFixedBalance}
                             value={firstValue}
-                            onChange={(event) => handleChange('first', event)}
+                            onChange={(event: ChangeEvent<HTMLInputElement>) => handleChange('first', event)}
                             placeholder="0"
                             type="number"
                         >
@@ -406,7 +407,7 @@ export function SwapWidget() {
                             usdValue={secondUsdValue}
                             balance={secondFiexedBalance}
                             value={secondValue}
-                            onChange={(event) => handleChange('second', event)}
+                            onChange={(event: ChangeEvent<HTMLInputElement>) => handleChange('second', event)}
                             placeholder="0"
                             type="number"
                             marginTop='-20px'

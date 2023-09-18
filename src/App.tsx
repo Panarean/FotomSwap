@@ -14,7 +14,7 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
  
 import {Provider} from 'react-redux';
 import store from './store'
-import { Center, ChakraProvider, Container, useColorModeValue } from '@chakra-ui/react'
+import { Center, ChakraProvider, Container } from '@chakra-ui/react'
 import { BrowserRouter } from 'react-router-dom'
 import { Menu } from './components/Menu'
 import { theme } from './theme'
