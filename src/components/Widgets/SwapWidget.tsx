@@ -17,6 +17,7 @@ import { Field } from './Field';
 import { Button } from '@chakra-ui/react';
 import { Box,Flex } from '@chakra-ui/react';
 import { useAccount,useConnect, useWalletClient } from 'wagmi';
+import { goerli } from 'viem/chains';
 import axios from 'axios';
 import {Buffer as  bBuf} from 'buffer'
 //import { arrayify } from 'ethers/lib/utils';
@@ -68,6 +69,7 @@ export function SwapWidget() {
     const [secondAllowance, setSecondAllowance] = useState<string>('0');
 
     const provider = getEthersProvider();
+    const chain = goerli;
     var buttonText:string = '';
     var buttonState:ButtonState;
 
@@ -333,7 +335,7 @@ export function SwapWidget() {
         let decimal, amoutIn, path;
         let transaction;
 
-        let signer = await getEthersSigner({chainId:5});
+        let signer = await getEthersSigner({chainId:chain.id});
         if(!signer){
             setWaiting(false);
             return;

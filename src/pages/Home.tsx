@@ -6,10 +6,9 @@ import { Route, Routes }  from 'react-router-dom'
 
 //import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import {
-    //SwapWidget,
     Pool,
-    SwapWidget
-    //AddLiquidity,
+    SwapWidget,
+    Addliquidity,
     //RemoveLiquidity
 } from '../components';
 import { useEffect } from 'react';
@@ -37,12 +36,13 @@ export function Home() {
         <Routes>
             <Route path="/pool" element={<Pool/>} />
             <Route path="/swap" element={<SwapWidget/>} />
+            <Route path="/addLiquidity" element={<Addliquidity/>} />
+s
 
         </Routes>
     );
 }
 /*
 
-                <Route path="/addLiquidity" element={<Addliquidity/>} />
                 <Route path="/removeLiquidity" element={<RemoveLiquidity/>} />
 */
