@@ -65,7 +65,7 @@ function App() {
               <Center  width="100%"  bg={bgColor} flexDirection="column">
                   <BrowserRouter>
                       <Menu />
-                      <Container centerContent width="100%" flex={1} maxWidth="container" paddingX="space20">
+                      <Container centerContent width="100%" flex={1} maxWidth="container" paddingX="space20" paddingBottom={'20px'}>
                           <Home />
                       </Container>
                   </BrowserRouter>

@@ -31,7 +31,7 @@ enum ButtonState{
     APPROVESECOND,
     ADDLIQUIDITY
 }
-export function Addliquidity() {
+export function AddLiquidity() {
     const navigate = useNavigate();
     var tokens:Tokens[] = useSelector<AppState,Tokens[]>(state => state.tokens);
     var buttonText:string = '';
