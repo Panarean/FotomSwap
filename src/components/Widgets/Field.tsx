@@ -51,7 +51,9 @@ export function Field({ label, isMaxBtn, setMaxFunc, usdValue, balance, children
                                 paddingTop='space10'
                                 paddingBottom='space10'
                                 width='100%'
+                                
                                 {...rest}
+                                marginTop={'0px'}
                             />
                         </Flex>
                         <Flex paddingLeft='space30' height='100%' width='100%'>

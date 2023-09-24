@@ -6,8 +6,8 @@ export function WidgetTitle({ title, children }: { title: string; subtitle?: str
     const titleColor = useColorModeValue('light.tertiary', 'dark.tertiary');
 
     return (
-        <Flex  justifyContent='space-between' alignItems='center' width='100%'>
-            <Text  fontSize='40px' variant='extraLarge' color={titleColor}>
+        <Flex  padding={['25px','0px']} pb='0px' justifyContent='space-between' alignItems='center' width='100%'>
+            <Text   fontSize='40px'  color={titleColor}>
                 {title}
             </Text>
             {children && (

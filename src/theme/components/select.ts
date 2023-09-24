@@ -13,11 +13,12 @@ export const Select: ComponentStyleConfig = {
             borderRadius: 0,
             cursor: 'pointer',
         },
+        
         control: {
             height: '100%',
             width: '100%',
             borderRadius: 'radius7',
-            bg: mode('light.bg.primary', 'dark.bg.tertiary')(props),
+            bg: mode('light.bg.primary', 'dark.bg.hover.tertiary')(props),
             _groupHover: {
                 bg: mode('light.bg.secondary', 'dark.bg.hover.tertiary')(props),
             },
@@ -48,7 +49,9 @@ export const Select: ComponentStyleConfig = {
             _groupHover: {
                 bg: mode('light.bg.secondary', 'dark.bg.hover.tertiary')(props),
             },
-            paddingX: 'space20',
+            borderRadius:'7px',
+            borderTopRadius:'0px',
+            paddingX: 'space10',
             paddingY: 'space10',
         },
         singleValue: {
