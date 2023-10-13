@@ -29,7 +29,7 @@ export function Web3Button() {
                 isLoading={isLoading || isConnecting}
                 size="medium"
                 textStyle="medium"
-                width={165}
+                maxWidth={'165px'}
             />
         );
     }
@@ -37,7 +37,7 @@ export function Web3Button() {
     else if (isConnected) {
         retVal= (
             <AccountPopover>
-                <Button size="medium" width={165}>
+                <Button size="medium" maxWidth={'165px'}>
                     {address?.slice(0, 6)}...{address?.slice(address.length - 4)}
                 </Button>
             </AccountPopover>
